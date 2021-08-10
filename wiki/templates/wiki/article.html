@@ -1,0 +1,90 @@
+{% extends "wiki/base.html" %}
+{% load wiki_tags i18n sekizai_tags  mathfilters %}
+
+
+{% block wiki_pagetitle %}{{ article.current_revision.title }}{% endblock %}
+
+{% block wiki_breadcrumbs %}
+{% include "wiki/includes/breadcrumbs.html" %}
+{% endblock %}
+
+{% block wiki_contents %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'wiki/article.js' %}"></script>
+  <div id="article-container">
+
+   <nav id="article-menu" class="navbar navbar-expand-md nav-pills">
+     <!-- infos pages (titre..) -->
+    <ul class="navbar-nav w-75">
+    <li class="float-left nav-item" id="article-title-li">
+        <h1 id="article-title" title='test{{ article.current_revision.title }}'>
+          {{ article.current_revision.title }}
+          <small style="font-size: 14px;">
+            {% if urlpath.parent %}
+            <a href="{% url 'wiki:get' path=urlpath.path %}" class="nav-link"><span class="fa fa-bookmark"></span> {{ urlpath.slug }}</a>
+            {% endif %}
+            {% if article.current_revision.locked %}
+              <span class="fa fa-lock"></span>
+            {% endif %}
+          </small>
+        </h1>
+        <small id='retourPostAjax'></small>
+      </li>
+
+    </ul>
+    <!-- menu de modification -->
+     <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+      {% include "wiki/includes/article_menu.html" %}
+
+    </ul>
+   </nav>
+
+  <div class='row'>
+   <div id='menu_personnalisationpoursdis49' class=" col-3">
+     <nav>
+       <ul  style ='list-style:none ;margin:0 ;padding:0'>
+          <!-- Need to get the first article (root) -->
+            <!-- Now get all the descendent articles of the root -->
+        {% with urlpath.level|add:3 as levelArticle %}
+        {% with urlpath.level|add:1 as levelTree %}
+          {% for child in urlpath.get_descendants %}
+            {% if child.level < levelArticle %}
+            <!-- Don't list articles marked for deletion -->
+            {% if not child.is_deleted %}
+            {% with child.level|sub:levelTree as children %}
+              {% with ''|center:children as range %}
+                {% for x in range %}<ul style ='list-style:none ;margin-left:15px ;padding:0'>{% endfor %}
+                {% url 'wiki:get' path=child.path as childpath %}
+                <li style= 'padding:0px' >
+                  <a href="{{ childpath }}">
+                    {{ child.article.current_revision.title }}
+                  </a>
+                </li>
+                {% for _ in range %}</ul>{% endfor %}
+              {% endwith %}
+              {% endwith %}
+            {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endwith %}
+        {% endwith %}
+        </ul>
+      </nav>
+    </div>
+   <!-- page wiki -->
+
+  <div class="col-9 border">
+
+      {% block wiki_contents_tab %}
+
+      {% endblock %}
+  </div>
+  </div>
+  </div>
+
+{% endblock %}
+
+{% block wiki_footer_prepend %}
+  <p style="margin-bottom: 10px;"><em>{% trans "This article was last modified:" %} {{ article.current_revision.modified }}</em></p>
+{% endblock %}
