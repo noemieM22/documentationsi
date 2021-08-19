@@ -14,7 +14,8 @@ from pathlib import Path
 from django.urls import reverse_lazy
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -25,7 +26,7 @@ SECRET_KEY = '(r27%o5*r(gt^sr!v5ell-ptjrnnat)dr#_s%ns-5bf3$^-q6&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.106.138','127.0.0.1']
 
 
 # Application definition
@@ -70,6 +71,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR,'templates'),
             os.path.join(BASE_DIR,'wiki/templates'),
         ],
         'APP_DIRS': True,
@@ -99,7 +101,7 @@ WSGI_APPLICATION = 'documentation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 
@@ -142,8 +144,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # STATICFILES_DIRS = (
-# os.path.join(BASE_DIR,'wiki/static'),
+#     os.path.join(BASE_DIR,'static'),
 #     )
+# STATIC_ROOT = os.path.join(BASE_DIR,'static')
+
 # STATICFILES_FINDERS = (
 #     'django.contrib.staticfiles.finders.FileSystemFinder',
 # )
