@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views import View
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -86,6 +86,8 @@ class URLPathViewSet(View):
                         request, article, newpath, titleSlug[p], p, '', '',)
                     grantAcces(art,groupT.id,1,1,0,0)
 
+        return redirect ('http://127.0.0.1:8000/logiciels/'+title)
+
 # Création de la structure de Documentation pour un module de logiciel:
 # Module
 #   - Doc (doc user)
@@ -144,7 +146,7 @@ class URLPathModuleViewSet(View):
                         request, article, newpath, titleSlug[p], p, '', '',)
                     grantAcces(art,groupT.id,1,1,0,0)
 
-
+        return redirect ('http://127.0.0.1:8000/logiciels/'+title)
 
 
 def grantAcces(article,groupId,groupread,groupwrite,otherread,otherwrite):
